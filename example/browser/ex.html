@@ -14,19 +14,18 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script>
     function setCenter( ) {
-    var l = Math.floor((window.screen.width - $(window).width()) / 2);
-    var t = Math.floor((window.screen.height - $(window).height()) / 2);
-moveTo(l,t); 
-}
-$(function(){
-    resizeTo(300,300);
-    setCenter();
-})
-  ;
+        var l = Math.floor((window.screen.width - $(window).width()) / 2);
+        var t = Math.floor((window.screen.height - $(window).height()) / 2);
+        moveTo(l,t); 
+    }
+    $(function(){
+        resizeTo(300,300);
+        //setCenter();
+    });
     </script>
 </head>
 <body>
-    <div style="background:url(/gopher.png) no-repeat 100% 0%;">
+    <div style="background:url(gopher.png) no-repeat 100% 0%;">
     <h1>Hello world!</h1>
     <div>message from server:</div>
     <div id="from_server"></div>

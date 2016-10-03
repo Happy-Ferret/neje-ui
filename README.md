@@ -7,9 +7,9 @@
 
 Not Embed, Just Execute chrome browser for UI in golang.
 
-For now just a PoC(proof of concept).  Don't believe me so much :)
+For now it's just a PoC(proof of concept).  Don't believe me so much :)
 
-I believe linx,win and osx are implemented, but  I only checked on linux. 
+I believe this works on linx,win and osx, but  I only checked one on linux. 
 
 ![](http://imgur.com/2TSlOIp.gif)
 
@@ -122,7 +122,7 @@ Then copy ex.html and ex.js to the webserver directory,
 go run ex.go
 ```
 
-Then your chrome browser (or something else if chrome is not installed) automatically is opened and
+Then your chrome browser (or something else if chrome is not installed)  is opened automatically and
 display the demo.
 
 ## What is It Doing?
@@ -153,8 +153,8 @@ display the demo.
 
 ### Cons
 
- * Cann't control browser precisely, must control them by javascript manually. (window size, menu etc.)
-* Behaviour may be different for each platform if chrom is not found.
+* Cann't control browser precisely, must control them by javascript manually. (window size, menu etc.)
+* Behaviour may be different for each platform if chrome is not found.
 
 
 # Contribution
