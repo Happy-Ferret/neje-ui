@@ -49,5 +49,5 @@ func browserPath() ([]string, []string) {
 		return nil, nil
 	}
 
-	return []string{"cmd /c start"}, []string{s}
+	return []string{s}, []string{"cmd /c start"}
 }

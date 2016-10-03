@@ -45,7 +45,7 @@ type Browser struct {
 	c      net.Conn
 }
 
-//New connects websocket and returns Browser obj.
+//New registers strs to RPC as funcs, connects websocket and returns Browser obj.
 func New(strs ...interface{}) (*Browser, error) {
 	var err error
 	b := &Browser{}

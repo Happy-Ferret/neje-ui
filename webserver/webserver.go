@@ -40,12 +40,15 @@ import (
 
 //WebServer represents web server side.
 type WebServer struct {
-	client   *rpc.Client
-	ch       chan struct{}
+	client *rpc.Client
+	ch     chan struct{}
+	//Finished is a chan which signals browsser was closed.
 	Finished chan struct{}
 }
 
-//New starts web server and  browser, returns WebServer obj.
+//New registers strs to RPC as funcs, starts web server from firstpage, runs browser in bpath,
+// and  returns WebServer obj.
+//if bpath=="", ru chrome or the default browser.
 func New(bpath, firstPage string, strs ...interface{}) (*WebServer, error) {
 	for _, str := range strs {
 		if err := rpc.Register(str); err != nil {

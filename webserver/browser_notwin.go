@@ -33,7 +33,6 @@ package webserver
 import "runtime"
 
 //browserPath returns paths of chrome and other browsers.
-
 func browserPath() ([]string, []string) {
 	switch runtime.GOOS {
 	case "darwin":

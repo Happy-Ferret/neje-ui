@@ -36,16 +36,13 @@ import (
 	"github.com/utamaro/neje-ui/browser"
 )
 
-//Jquery is for convenience.
-var jQuery = jquery.NewJQuery
-
 //GUI is struct to bel called from remote by rpc.
 type GUI struct{}
 
 //Write writes a response from the server.
 func (g *GUI) Write(msg *string, reply *string) error {
 	//show welcome message:
-	jQuery("#from_server").SetText(msg)
+	jquery.NewJQuery("#from_server").SetText(msg)
 	return nil
 }
 
@@ -56,16 +53,16 @@ func main() {
 		log.Fatal(err)
 	}
 	//defer b.Close()
-	jQuery("button").On(jquery.CLICK, func(e jquery.Event) {
+	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
 		go func() {
-			m := jQuery("#to_server").Val()
+			m := jquery.NewJQuery("#to_server").Val()
 			response := ""
 			err = b.Call("Msg.Message", &m, &response)
 			if err != nil {
 				log.Fatal(err)
 			}
 			//show welcome message:
-			jQuery("#response").SetText(response)
+			jquery.NewJQuery("#response").SetText(response)
 		}()
 	})
 

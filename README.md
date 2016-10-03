@@ -9,7 +9,7 @@ Not Embed, Just Execute chrome browser for UI in golang.
 
 For now just a PoC(proof of concept).  Don't believe me so much :)
 
-I only checked it on linux, not on win,osx. 
+I believe linx,win and osx are implemented, but  I only checked on linux. 
 
 ![](http://imgur.com/2TSlOIp.gif)
 
@@ -56,19 +56,19 @@ type GUI struct{}
 //Write writes a response from the server.
 func (g *GUI) Write(msg *string, reply *string) error {
 	//show welcome message:
-	jQuery("#from_server").SetText(msg)
+	jquery.NewJQuery("#from_server").SetText(msg)
 	return nil
 }
 
 func main() {
 	b,_ := browser.New(new(GUI))
-	jQuery("button").On(jquery.CLICK, func(e jquery.Event) {
+	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
 		go func() {
-			m := jQuery("#to_server").Val()
+			m := jquery.NewJQuery("#to_server").Val()
 			response := ""
 			b.Call("Msg.Message", &m, &response)
 			//show welcome message:
-			jQuery("#response").SetText(response)
+			jquery.NewJQuery("#response").SetText(response)
 		}()
 	})
 
@@ -148,10 +148,13 @@ display the demo.
 5. Chrome browser has convinent options for application (--app etc).
 
 ### Pros
- Can make golang progs that can be cross compiled easily with small size.
+ 
+ * Can make golang progs that can be cross compiled easily with small size.
 
 ### Cons
- Cann't control browser precisely, must control them by javascript manually. (window size, menu etc.)
+
+ * Cann't control browser precisely, must control them by javascript manually. (window size, menu etc.)
+* Behaviour may be different for each platform if chrom is not found.
 
 
 # Contribution
