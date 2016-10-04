@@ -5,25 +5,21 @@
 
 # neje-ui
 
-Not Embed, Just Execute chrome browser for UI in golang.
+**Don't Embed, Just Execute** Chrome browser for a UI in Go.
 
-For now it's just a PoC(proof of concept).  Don't believe me so much :)
+For now it's just a PoC (proof of concept).  Don't believe me so much. :)
 
-I believe this works on linx,win and osx, but  I only checked one on linux. 
+I believe this works on Linux, Win and OS X, but I have only tested on Linux. 
 
 ![](http://imgur.com/2TSlOIp.gif)
 
 
 ## Overview
 
-This library is an UI alternative for golang by using chrome browser(or something else) that is already installed.
+This library is a UI alternative for Go which uses the Chrome browser (or an alternate browser) that is already installed. The application communicates with the browser via a JSON-RPC websocket using [gopherjs](https://github.com/gopherjs/gopherjs). That means you can call funcs in the browser from the server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
+without worrying about the websocket and JavaScript.
 
-This communicates with browser by JSON-RPC on websocket using [gopherjs](https://github.com/gopherjs/gopherjs).
-
-You can call funcs on browser from server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
-without considering about websocket and javascript.
-
-You can write server-side program and client side program in golang.
+You can write the server-side *and* client side program in Go.
 
 ## Requirements
 
@@ -50,7 +46,7 @@ go get -u github.com/gopherjs/gopherjs
 
 ```go
 
-//GUI is struct to bel called from remote by rpc.
+//GUI is struct to be called from remote by rpc.
 type GUI struct{}
 
 //Write writes a response from the server.
@@ -77,7 +73,7 @@ func main() {
 
 ```
 
-Then compile it by gopherjs to create ex.js:
+Then compile it with GopherJS to create ex.js:
 
 ```
 go get  
@@ -105,7 +101,7 @@ func main() {
 	for {
 		select {
 		case <-ws.Finished:
-			log.Println("browser was closed. Exiting...")
+			log.Println("Browser was closed. Exiting...")
 			return
 		case <-time.After(10 * time.Second):
 			msg := "Now " + time.Now().String() + " at server!"
@@ -122,39 +118,39 @@ Then copy ex.html and ex.js to the webserver directory,
 go run ex.go
 ```
 
-Then your chrome browser (or something else if chrome is not installed)  is opened automatically and
+Then your Chrome browser (or something else if Chrome is not installed) will open automatically and
 display the demo.
 
 ## What is It Doing?
 
-1. Start a webserver including websocket at a free port at localhost.
-1. Search chrome browser. 
-	1. If windows, read registry to get the path to chrome. 
-	2. If macos, just run "open -a google chrome ".
-    3. if linux, run "google-chrome", "chrome", or something else.
-1. If chrome is found, run chrome with the options "--disable-extension --app=<url>"
-1. if chrome is not found, 
-	1. If windows, just run "start <url>". 
-	2. If macos, just run "open <url>  ".
-    3. if linux, just run "xdg-open <url>"
-1. communicate between webserver and browser using websocket.
+1. Start a webserver including websocket on a free port at localhost.
+1. Search Chrome browser. 
+	1. If windows, read registry to get the path to Chrome. 
+	2. If OS X, just run "open -a google chrome ".
+    3. if Linux, run "google-chrome", "chrome", or something else.
+1. If Chrome is found, run chrome with the options "--disable-extension --app=<url>"
+for me1.. If Chrome is not found, 
+	1. If Windows, just run "start <url>". 
+	2. If OS X, just run "open <url>  ".
+    3. if Linux, just run "xdg-open <url>"
+1. Communicate between the webserver and browser using websockets.
 
-## Why not embed chrome lib?
+## Why not embed Chrome lib?
 
-1. chrome lib is very big(about 100MB?) for single apps.
-2. chrome lib APIs are always changing.
-3. Not want to loose eco system(easy to cross compile etc) of golang.
-4. Chrome lib is too difficult to understand for me :( .
-5. Chrome browser has convinent options for application (--app etc).
+1. Chrome lib is very big (about 100MB?) for a single app.
+2. Chrome lib APIs are always changing.
+3. One doesn't want to loose the eco system (easy to cross compile etc) of Go.
+4. Chrome lib is difficult to understand. :(
+5. Chrome browser has convenient options for an application (--app etc).
 
 ### Pros
  
- * Can make golang progs that can be cross compiled easily with small size.
+ * Can make Go apps that can be cross compiled easily with a small size.
 
 ### Cons
 
-* Cann't control browser precisely, must control them by javascript manually. (window size, menu etc.)
-* Behaviour may be different for each platform if chrome is not found.
+* Can't control browser precisely--must control them via JavaScript, manually. (window size, menu etc.)
+* Behaviour may be different for each platform if Chrome is not found.
 
 
 # Contribution
