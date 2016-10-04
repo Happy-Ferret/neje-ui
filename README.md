@@ -17,12 +17,12 @@ I believe this works on Linux, Win and OS X, but I have only tested on Linux.
 * You need to install Chrome browser.
 * It looks like a real application.
 
-### Default browser mode 
+### Default browser mode (ex. firefox) 
 ![](http://i.imgur.com/CbDrwWr.gif)
 
 * You can install any browser.
 * Its appearance is "browser" itself. 
-* You cannot control window size and location by Javascript due to the  browser restrictions.
+* You cannot control window size and window location by Javascript due to the  browser restrictions.
 
 ## Overview
 
@@ -150,17 +150,16 @@ display the demo.
 ## What is It Doing?
 
 1. Start a webserver including websocket on a free port at localhost.
-1. Search Chrome browser. 
+1. Search Chrome browser if app option mode.  
 	1. If windows, read registry to get the path to Chrome. 
-	2. If OS X, just run "open -a google chrome ".
+	2. If OS X, run "open -a google chrome ".
     3. if Linux, run "google-chrome", "chrome", or something else.
-1. If Chrome is found, run chrome with the options "--disable-extension --app=<url>"
-for me
-1. If Chrome is not found, 
-	1. If Windows, just run "start <url>". 
-	2. If OS X, just run "open <url>  ".
-    3. if Linux, just run "xdg-open <url>"
-1. Communicate between the webserver and browser using websockets.
+    1. If Chrome is found, run chrome with the options "--disable-extension --app=<url>"
+1. If default browser mode, 
+	1. If Windows, run "start <url>". 
+	2. If OS X, run "open <url>  ".
+    3. if Linux, run "xdg-open <url>"
+1. The werbserver and browser starts communication browser using websockets.
 
 ## Why not embed Chrome lib?
 
@@ -168,7 +167,7 @@ for me
 Go is used to make a single app rather than used in framework like electron. 
 2. Chrome lib APIs are always changing.
 3. Noone wants to loose the eco system (easy to cross compile etc) of Go.
-4. Chrome lib is difficult to understand :(
+4. Chrome lib is too difficult to understand :(
 5. Chrome browser has convenient options for an application (--app etc).
 
 ### Pros
@@ -178,7 +177,7 @@ Go is used to make a single app rather than used in framework like electron.
 ### Cons
 
 * You can't control browser precisely--must control them via JavaScript, manually. (window size, menu etc.)
-* Behaviour may be different for each platform when you use default browser.
+* Behaviour may be different for each platforms when you use default browser.
 
 
 # Contribution
