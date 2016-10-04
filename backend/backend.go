@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package webserver
+package backend
 
 import (
 	"log"
@@ -34,85 +34,127 @@ import (
 	"net/http"
 	"net/rpc"
 	"net/rpc/jsonrpc"
+	"time"
 
 	"golang.org/x/net/websocket"
 )
 
-//WebServer represents web server side.
-type WebServer struct {
-	client *rpc.Client
-	ch     chan struct{}
+//Ping  is struct to be pinged.
+type Ping struct{}
+
+//Ping responses to a ping..
+func (p *Ping) Ping(m *string, response *string) error {
+	*response = "OK"
+	return nil
+}
+
+//Backend represents web server side.
+type Backend struct {
+	client      *rpc.Client
+	closeClient chan struct{}
 	//Finished is a chan which signals browsser was closed.
 	Finished chan struct{}
 }
 
-//New registers strs to RPC as funcs, starts web server from firstpage, runs browser in bpath,
-// and  returns WebServer obj.
-//if bpath=="", ru chrome or the default browser.
-func New(bpath, firstPage string, strs ...interface{}) (*WebServer, error) {
+//ping pings the server.
+func (w *Backend) ping() {
+	go func() {
+		count := 0
+		m := ""
+		r := ""
+		for range time.Tick(time.Second) {
+			if w.client == nil {
+				continue
+			}
+			if errr := w.Call("Ping.Ping", &m, &r); errr != nil {
+				count++
+			} else {
+				count = 0
+			}
+			if count > 2 {
+				log.Println("browser seems to be closed.")
+				w.Finished <- struct{}{}
+				return
+			}
+		}
+	}()
+}
+
+//New registers strs to RPC as funcs, starts web server, open firstpage by browser,
+// and  returns Backend obj.
+//t selects chrome or the default browser.
+func New(t int, firstPage string, strs ...interface{}) (*Backend, error) {
+	if err := rpc.Register(new(Ping)); err != nil {
+		return nil, err
+	}
 	for _, str := range strs {
 		if err := rpc.Register(str); err != nil {
 			return nil, err
 		}
 	}
-	w := &WebServer{
-		ch: make(chan struct{}),
+	w := &Backend{
+		closeClient: make(chan struct{}),
 	}
-	var err error
 	addr := w.start()
-	w.Finished, err = tryBrowser(bpath, "http://"+addr.String()+"/"+firstPage)
-	<-w.ch
-	return w, err
+	err := tryBrowser(t, "http://"+addr.String()+"/"+firstPage)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	w.ping()
+	return w, nil
 }
 
 //Close closes client RPC connection.
-func (w *WebServer) Close() {
-	w.ch <- struct{}{}
+func (w *Backend) Close() {
+	w.closeClient <- struct{}{}
 }
 
 //Call calls calls RPC.
-func (w *WebServer) Call(m string, args interface{}, reply interface{}) error {
+func (w *Backend) Call(m string, args interface{}, reply interface{}) error {
 	return w.client.Call(m, args, reply)
 }
 
-//regHandlers registers handlers to http.
-func regHandlers(w *WebServer) {
-	http.HandleFunc("/ws-server",
-		func(w http.ResponseWriter, req *http.Request) {
+//regHandlers registers handlers to http return servemux.
+func (w *Backend) regHandlers() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/ws-server",
+		func(rw http.ResponseWriter, req *http.Request) {
 			log.Println("connected to ws-server")
 			s := websocket.Server{
 				Handler: websocket.Handler(func(ws *websocket.Conn) {
 					jsonrpc.ServeConn(ws)
+					log.Println("ws-server was disconnected")
 				}),
 			}
-			s.ServeHTTP(w, req)
+			s.ServeHTTP(rw, req)
 		})
-	http.HandleFunc("/ws-client",
+	mux.HandleFunc("/ws-client",
 		func(rw http.ResponseWriter, req *http.Request) {
 			log.Println("connected to ws-client")
 			s := websocket.Server{
 				Handler: websocket.Handler(func(ws *websocket.Conn) {
 					w.client = jsonrpc.NewClient(ws)
-					w.ch <- struct{}{}
-					<-w.ch
+					<-w.closeClient //wait for Close()
 				}),
 			}
 			s.ServeHTTP(rw, req)
 		})
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
+	return mux
 }
 
 //start starts webserver at localhost:0(i.e. free port) and returns listen address.
-func (w *WebServer) start() net.Addr {
-	regHandlers(w)
+func (w *Backend) start() net.Addr {
+	mux := w.regHandlers()
 	l, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
 		log.Fatal(err)
 	}
 	go func() {
-		if err := http.Serve(l, nil); err != nil {
+		if err := http.Serve(l, mux); err != nil {
 			log.Fatal(err)
 		}
 	}()

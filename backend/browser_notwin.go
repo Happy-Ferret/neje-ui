@@ -1,4 +1,4 @@
-// +build windows
+// +build !windows
 
 /*
  * Copyright (c) 2016, Shinya Yagyu
@@ -28,26 +28,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package webserver
+package backend
 
-import "log"
+import "runtime"
 
-//browserPath returns paths of chrome and other browsers from the regstry.
-func browserPath() ([]string, []string) {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		`SOFTWARE\Microsoft\Windows NT\CurrentVersion\App Paths`,
-		registry.QUERY_VALUE)
-	if err != nil {
-		log.Printf(err)
-		return nil, nil
+//defaultPath returns paths of default browsers.
+func defaultPaths() []string {
+	switch runtime.GOOS {
+	case "darwin":
+		return []string{"/usr/bin/open"}
+
+	default:
+		return []string{"xdg-open"}
 	}
-	defer k.Close()
+}
 
-	s, _, err := k.GetStringValue("chrome.exe")
-	if err != nil {
-		log.Printf(err)
-		return nil, nil
+//chromePath returns paths of chrome.
+func chromePaths() []string {
+	switch runtime.GOOS {
+	case "darwin":
+		return []string{"/usr/bin/open  -n -a Google\\ Chrome --args"}
+
+	default:
+		return []string{
+			"chrome",
+			"google-chrome",
+			"chrome-stable",
+			"google-chrome-stable",
+			"/opt/google/chrome/chrome",
+			"/opt/google/chrome/google-chrome",
+		}
 	}
-
-	return []string{s}, []string{"cmd /c start"}
 }

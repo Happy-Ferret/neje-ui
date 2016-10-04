@@ -1,5 +1,3 @@
-// +build !windows
-
 /*
  * Copyright (c) 2016, Shinya Yagyu
  * All rights reserved.
@@ -28,25 +26,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package webserver
+package main
 
-import "runtime"
+import (
+	"log"
 
-//browserPath returns paths of chrome and other browsers.
-func browserPath() ([]string, []string) {
-	switch runtime.GOOS {
-	case "darwin":
-		return []string{"/usr/bin/open -a Google\\ Chrome"}, []string{"/usr/bin/open"}
+	"github.com/gopherjs/jquery"
 
-	default:
-		return []string{
-				"chrome",
-				"google-chrome",
-				"chrome-stable",
-				"google-chrome-stable",
-				"/opt/google/chrome/chrome",
-				"/opt/google/chrome/google-chrome",
-			},
-			[]string{"xdg-open"}
+	"github.com/utamaro/neje-ui/frontend"
+)
+
+//GUI is struct to be called from remote by rpc.
+type GUI struct{}
+
+//Write writes a response from the server.
+func (g *GUI) Write(msg *string, reply *string) error {
+	//show welcome message:
+	jquery.NewJQuery("#from_server").SetText(msg)
+	return nil
+}
+
+func main() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+	b, err := frontend.New(new(GUI))
+	if err != nil {
+		log.Fatal(err)
 	}
+	//defer b.Close()
+	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
+		go func() {
+			m := jquery.NewJQuery("#to_server").Val()
+			response := ""
+			err = b.Call("Msg.Message", &m, &response)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Println(response)
+			//show welcome message:
+			jquery.NewJQuery("#response").SetText(response)
+		}()
+	})
+
 }

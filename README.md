@@ -5,18 +5,28 @@
 
 # neje-ui
 
-**Don't Embed, Just Execute** Chrome browser for a UI in Go.
+Do **Not Embed, Just Execute** the browser for an UI in Go.
 
-For now it's just a PoC (proof of concept).  Don't believe me so much. :)
+For now it's just a PoC (proof of concept).  Don't believe me too much. :) 
 
 I believe this works on Linux, Win and OS X, but I have only tested on Linux. 
 
+### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
 
+* You need to install Chrome browser.
+* It looks like a real application.
+
+### Default browser mode 
+![](http://i.imgur.com/CbDrwWr.gif)
+
+* You can install any browser.
+* Its appearance is "browser" itself. 
+* You cannot control window size and location by Javascript due to the  browser restrictions.
 
 ## Overview
 
-This library is a UI alternative for Go which uses the Chrome browser (or an alternate browser) that is already installed. The application communicates with the browser via a JSON-RPC websocket using [gopherjs](https://github.com/gopherjs/gopherjs). That means you can call funcs in the browser from the server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
+This library is a UI alternative for Go which uses the Chrome browser (or a default browser) that is already installed. The application communicates with the browser via a JSON-RPC websocket using [gopherjs](https://github.com/gopherjs/gopherjs). That means you can call funcs in the browser from the server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
 without worrying about the websocket and JavaScript.
 
 You can write the server-side *and* client side program in Go.
@@ -27,10 +37,18 @@ This requires
 
 * git
 * go 1.7 (for gopherjs)
+* web browser (Chrome browser is recommended)
 * gopherjs
+
 ```
 go get -u github.com/gopherjs/gopherjs
 ```
+
+## Platforms
+
+* Linux
+* OSX (not tested yet)
+* Windows (not tested yet)
 
 ## Installation
 
@@ -42,7 +60,8 @@ go get -u github.com/gopherjs/gopherjs
 
 ## browser side
 
-[ex.go](https://github.com/utamaro/wsrpc/blob/master/example/browser/ex.go)
+[ex.html](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.html)
+[ex.go](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.go)
 
 ```go
 
@@ -57,19 +76,20 @@ func (g *GUI) Write(msg *string, reply *string) error {
 }
 
 func main() {
-	b,_ := browser.New(new(GUI))
+	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+	b,_ := frontend.New(new(GUI))
+	//defer b.Close()
 	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
 		go func() {
 			m := jquery.NewJQuery("#to_server").Val()
 			response := ""
-			b.Call("Msg.Message", &m, &response)
+			 b.Call("Msg.Message", &m, &response)
 			//show welcome message:
 			jquery.NewJQuery("#response").SetText(response)
 		}()
 	})
 
 }
-
 
 ```
 
@@ -82,11 +102,11 @@ gopherjs build ex.go
 
 ## webserver side
 
-[ex.go](https://github.com/utamaro/wsrpc/blob/master/example/webserver/ex.go)
+[ex.go](https://github.com/utamaro/neje-ui/blob/master/example/webserver/ex.go)
 
 ```go
 
-//Msg  is struct to bel called from remote by rpc.
+//Msg  is struct to be called from remote by rpc.
 type Msg struct{}
 
 //Message writes a message to the browser.
@@ -96,14 +116,20 @@ func (t *Msg) Message(m *string, response *string) error {
 }
 
 func main() {
-	ws,_ := webserver.New("", "ex.html", new(Msg))
-
+	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+	//for default browser mode
+	ws, _ := backend.New(backend.Default, "ex.html", new(Msg))
+	//for app option mode
+//	ws, _ := backend.New(backend.AppOptionChrome, "ex.html", new(Msg))
+	i := 0
 	for {
 		select {
 		case <-ws.Finished:
-			log.Println("Browser was closed. Exiting...")
+			log.Println("browser was closed. Exiting...")
 			return
 		case <-time.After(10 * time.Second):
+			i++
+			log.Println("writing", i, "to browser")
 			msg := "Now " + time.Now().String() + " at server!"
 			reply := ""
 			ws.Call("GUI.Write", &msg, &reply)
@@ -129,7 +155,8 @@ display the demo.
 	2. If OS X, just run "open -a google chrome ".
     3. if Linux, run "google-chrome", "chrome", or something else.
 1. If Chrome is found, run chrome with the options "--disable-extension --app=<url>"
-for me1.. If Chrome is not found, 
+for me
+1. If Chrome is not found, 
 	1. If Windows, just run "start <url>". 
 	2. If OS X, just run "open <url>  ".
     3. if Linux, just run "xdg-open <url>"
@@ -137,23 +164,24 @@ for me1.. If Chrome is not found,
 
 ## Why not embed Chrome lib?
 
-1. Chrome lib is very big (about 100MB?) for a single app.
+1. Chrome lib is too big (about 100MB?) for a single app. 
+Go is used to make a single app rather than used in framework like electron. 
 2. Chrome lib APIs are always changing.
-3. One doesn't want to loose the eco system (easy to cross compile etc) of Go.
-4. Chrome lib is difficult to understand. :(
+3. Noone wants to loose the eco system (easy to cross compile etc) of Go.
+4. Chrome lib is difficult to understand :(
 5. Chrome browser has convenient options for an application (--app etc).
 
 ### Pros
  
- * Can make Go apps that can be cross compiled easily with a small size.
+ * You can make Go apps that can be cross compiled easily with a small size.
 
 ### Cons
 
-* Can't control browser precisely--must control them via JavaScript, manually. (window size, menu etc.)
-* Behaviour may be different for each platform if Chrome is not found.
+* You can't control browser precisely--must control them via JavaScript, manually. (window size, menu etc.)
+* Behaviour may be different for each platform when you use default browser.
 
 
 # Contribution
 Improvements to the codebase and pull requests are encouraged.
-
+And any ideas are also welcomed.
 

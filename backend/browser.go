@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package webserver
+package backend
 
 import (
 	"errors"
@@ -37,28 +37,37 @@ import (
 	"strings"
 )
 
-var option = " --disable-extension  --app=%s"
+const (
+	//Default represents default browser.
+	Default = iota
+	//AppOptionChrome  chrome browser with options.
+	AppOptionChrome
+)
 
-func browsers(def string) []string {
-	if def != "" {
-		return []string{def}
-	}
-	chrome, other := browserPath()
-	if exe := os.Getenv("BROWSER"); exe != "" {
-		other = append([]string{exe}, other...)
-	}
-	for i := range chrome {
-		chrome[i] += option
-	}
-	for i := range other {
-		other[i] += " %s"
-	}
+var optionAppStyleChrome = " --disable-extension  --new-window --app=%s"
 
-	return append(chrome, other...)
+func browsers(t int) []string {
+	var paths []string
+	switch t {
+	case Default:
+		paths = defaultPaths()
+		if exe := os.Getenv("BROWSER"); exe != "" {
+			paths = append([]string{exe}, paths...)
+		}
+		for i := range paths {
+			paths[i] += " %s"
+		}
+	case AppOptionChrome:
+		paths = chromePaths()
+		for i := range paths {
+			paths[i] += optionAppStyleChrome
+		}
+	}
+	return paths
 }
 
-func tryBrowser(def string, p string) (chan struct{}, error) {
-	cmds := browsers(def)
+func tryBrowser(t int, p string) error {
+	cmds := browsers(t)
 	for _, v := range cmds {
 		v = fmt.Sprintf(v, p)
 		// Separate command and arguments for exec.Command.
@@ -68,19 +77,12 @@ func tryBrowser(def string, p string) (chan struct{}, error) {
 		}
 		log.Println("executing", v)
 		viewer := exec.Command(args[0], args[1:]...)
-		viewer.Stderr = os.Stderr
+		//viewer.Stderr = os.Stderr
 		if err := viewer.Start(); err != nil {
 			log.Println(err)
 			continue
 		}
-		ch := make(chan struct{})
-		go func() {
-			if err := viewer.Wait(); err != nil {
-				log.Println(err)
-			}
-			ch <- struct{}{}
-		}()
-		return ch, nil
+		return nil
 	}
-	return nil, errors.New("no browsers are found")
+	return errors.New("no browsers are found")
 }

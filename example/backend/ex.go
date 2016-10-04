@@ -29,13 +29,14 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"time"
 
-	"github.com/utamaro/neje-ui/webserver"
+	"github.com/utamaro/neje-ui/backend"
 )
 
-//Msg  is struct to bel called from remote by rpc.
+//Msg  is struct to be called from remote by rpc.
 type Msg struct{}
 
 //Message writes a message to the browser.
@@ -46,7 +47,10 @@ func (t *Msg) Message(m *string, response *string) error {
 
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
-	ws, err := webserver.New("", "ex.html", new(Msg))
+	browser := 0
+	flag.IntVar(&browser, "type", 0, "0:deault browser 1:app style chrome")
+	flag.Parse()
+	ws, err := backend.New(browser, "ex.html", new(Msg))
 	if err != nil {
 		log.Fatal(err)
 	}

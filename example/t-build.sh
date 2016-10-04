@@ -2,12 +2,12 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cd $DIR/browser
+cd $DIR/frontend
 go get  
 gopherjs build ex.go
  
-cp ex.html $DIR/webserver
-cp ex.js $DIR/webserver
+cp ex.js $DIR/backend
+cp ex.js.map $DIR/backend
 
-cd $DIR/webserver
+cd $DIR/backend
 go run ex.go

@@ -1,3 +1,5 @@
+// +build windows
+
 /*
  * Copyright (c) 2016, Shinya Yagyu
  * All rights reserved.
@@ -26,44 +28,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package main
+package backend
 
-import (
-	"log"
+import "log"
 
-	"github.com/gopherjs/jquery"
-
-	"github.com/utamaro/neje-ui/browser"
-)
-
-//GUI is struct to bel called from remote by rpc.
-type GUI struct{}
-
-//Write writes a response from the server.
-func (g *GUI) Write(msg *string, reply *string) error {
-	//show welcome message:
-	jquery.NewJQuery("#from_server").SetText(msg)
-	return nil
+//defaultPath returns paths of default browsers.
+func defaultPaths() []string {
+	return []string{"cmd /c start /wait"}
 }
 
-func main() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
-	b, err := browser.New(new(GUI))
+//chromePath returns paths of chrome.
+func chromePaths() []string {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
+		`SOFTWARE\Microsoft\Windows NT\CurrentVersion\App Paths`,
+		registry.QUERY_VALUE)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf(err)
+		return nil
 	}
-	//defer b.Close()
-	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
-		go func() {
-			m := jquery.NewJQuery("#to_server").Val()
-			response := ""
-			err = b.Call("Msg.Message", &m, &response)
-			if err != nil {
-				log.Fatal(err)
-			}
-			//show welcome message:
-			jquery.NewJQuery("#response").SetText(response)
-		}()
-	})
+	defer k.Close()
 
+	s, _, err := k.GetStringValue("chrome.exe")
+	if err != nil {
+		log.Printf(err)
+		return nil
+	}
+	return []string{s}
 }
