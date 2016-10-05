@@ -154,7 +154,7 @@ func (w *Backend) regHandlers() *http.ServeMux {
 //start starts webserver at localhost:0(i.e. free port) and returns listen address.
 func (w *Backend) start() net.Addr {
 	mux := w.regHandlers()
-	l, err := net.Listen("tcp", "localhost:0")
+	l, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}

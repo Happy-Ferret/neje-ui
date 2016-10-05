@@ -9,7 +9,7 @@ Do **Not Embed, Just Execute** the browser for an UI in Go.
 
 For now it's just a PoC (proof of concept).  Don't believe me too much. :) 
 
-I believe this works on Linux, Win and OS X, but I have only tested on Linux. 
+I believe this works on Linux, Win and OS X, but I have not tested on OS X. 
 
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
@@ -26,7 +26,9 @@ I believe this works on Linux, Win and OS X, but I have only tested on Linux.
 
 ## Overview
 
-This library is a UI alternative for Go which uses the Chrome browser (or a default browser) that is already installed. The application communicates with the browser via a JSON-RPC websocket using [gopherjs](https://github.com/gopherjs/gopherjs). That means you can call funcs in the browser from the server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
+This library is a UI alternative for Go which uses the Chrome browser (or a default browser) that is already installed. 
+The application communicates with the browser via a JSON-RPC websocket using [GopherJS](https://github.com/gopherjs/gopherjs).
+ That means you can call funcs in the browser from the server (and vice versa) in [golang RPC-style](https://golang.org/pkg/net/rpc/) 
 without worrying about the websocket and JavaScript.
 
 You can write the server-side *and* client side program in Go.
@@ -40,7 +42,7 @@ This requires
 * web browser
 	* Newest Chrome browser is recommended.
 	* firefox
-	* It doens't work on Internet Explorer and Microsoft Edge (because Gopherjs uses ECMAScript6) 
+	* It doens't work on Internet Explorer and Microsoft Edge (because GopherJS uses ECMAScript6?) 
 * GopherJS
 
 ```
