@@ -50,7 +50,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
 	b, err := frontend.New(new(GUI))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	//defer b.Close()
 	jquery.NewJQuery("button").On(jquery.CLICK, func(e jquery.Event) {
@@ -59,12 +59,11 @@ func main() {
 			response := ""
 			err = b.Call("Msg.Message", &m, &response)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
 			}
-			log.Println(response)
 			//show welcome message:
+			log.Println(response)
 			jquery.NewJQuery("#response").SetText(response)
 		}()
 	})
-
 }

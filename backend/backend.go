@@ -63,7 +63,7 @@ func (w *Backend) ping() {
 		count := 0
 		m := ""
 		r := ""
-		for range time.Tick(time.Second) {
+		for range time.Tick(1 * time.Second) {
 			if w.client == nil {
 				continue
 			}
@@ -95,6 +95,7 @@ func New(t int, firstPage string, strs ...interface{}) (*Backend, error) {
 	}
 	w := &Backend{
 		closeClient: make(chan struct{}),
+		Finished:    make(chan struct{}),
 	}
 	addr := w.start()
 	err := tryBrowser(t, "http://"+addr.String()+"/"+firstPage)

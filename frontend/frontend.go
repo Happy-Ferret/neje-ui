@@ -62,7 +62,7 @@ func (b *Frontend) ping() {
 		count := 0
 		m := ""
 		r := ""
-		for range time.Tick(time.Second) {
+		for range time.Tick(1 * time.Second) {
 			if errr := b.Call("Ping.Ping", &m, &r); errr != nil {
 				log.Println(errr)
 				count++
@@ -87,19 +87,20 @@ func (b *Frontend) connect() error {
 	var err error
 	port := js.Global.Get("window").Get("location").Get("port").String()
 	log.Println(port)
-	b.s, err = websocket.Dial("ws://localhost:" + port + "/ws-client") // Blocks until connection is established
+	b.s, err = websocket.Dial("ws://127.0.0.1:" + port + "/ws-client") // Blocks until connection is established
 	if err != nil {
-		log.Println("ws://localhost:"+port+"/ws-client", err)
+		log.Println("ws://127.0.0.1:"+port+"/ws-client", err)
 		return err
 	}
 	log.Println("connected to ws-client")
 	go jsonrpc.ServeConn(b.s)
 
-	b.c, err = websocket.Dial("ws://localhost:" + port + "/ws-server") // Blocks until connection is established
+	b.c, err = websocket.Dial("ws://127.0.0.1:" + port + "/ws-server") // Blocks until connection is established
 	if err != nil {
-		log.Println("ws://localhost:"+port+"/ws-server", err)
+		log.Println("ws://127.0.0.1:"+port+"/ws-server", err)
 		return err
 	}
+
 	log.Println("connected to ws-server")
 	b.client = jsonrpc.NewClient(b.c)
 	return nil

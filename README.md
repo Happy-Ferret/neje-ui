@@ -37,7 +37,10 @@ This requires
 
 * git
 * go 1.7 (for GopherJS)
-* web browser (Internet Explore 10 or newer, firefox, Chrome browser is recommended)
+* web browser
+	* Newest Chrome browser is recommended.
+	* firefox
+	* It doens't work on Internet Explorer and Microsoft Edge (because Gopherjs uses ECMAScript6) 
 * GopherJS
 
 ```
@@ -48,7 +51,7 @@ go get -u github.com/gopherjs/gopherjs
 
 * Linux
 * OSX (not tested yet)
-* Windows (not tested yet)
+* Windows
 
 ## Installation
 
