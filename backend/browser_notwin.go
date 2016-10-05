@@ -33,21 +33,21 @@ package backend
 import "runtime"
 
 //defaultPath returns paths of default browsers.
-func defaultPaths() []string {
+func defaultPaths() ([]string, string) {
 	switch runtime.GOOS {
 	case "darwin":
-		return []string{"/usr/bin/open"}
+		return []string{"/usr/bin/open"}, ""
 
 	default:
-		return []string{"xdg-open"}
+		return []string{"xdg-open"}, ""
 	}
 }
 
 //chromePath returns paths of chrome.
-func chromePaths() []string {
+func chromePaths() ([]string, string) {
 	switch runtime.GOOS {
 	case "darwin":
-		return []string{"/usr/bin/open  -n -a Google\\ Chrome --args"}
+		return []string{"/usr/bin/open"}, "-n -a Google\\ Chrome --args"
 
 	default:
 		return []string{
@@ -57,6 +57,6 @@ func chromePaths() []string {
 			"google-chrome-stable",
 			"/opt/google/chrome/chrome",
 			"/opt/google/chrome/google-chrome",
-		}
+		}, ""
 	}
 }

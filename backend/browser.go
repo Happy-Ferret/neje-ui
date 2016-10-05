@@ -44,39 +44,44 @@ const (
 	AppOptionChrome
 )
 
-var optionAppStyleChrome = " --disable-extension  --new-window --app=%s"
+var optionAppStyleChrome = "--disable-extension  --new-window --app=%s"
 
-func browsers(t int) []string {
-	var paths []string
+func browsers(t int) ([]string, string) {
+	var cmds []string
+	opt := ""
 	switch t {
 	case Default:
-		paths = defaultPaths()
+		cmds, opt = defaultPaths()
 		if exe := os.Getenv("BROWSER"); exe != "" {
-			paths = append([]string{exe}, paths...)
+			cmds = append([]string{exe}, cmds...)
 		}
-		for i := range paths {
-			paths[i] += " %s"
+		if opt == "" {
+			opt = "%s"
+		} else {
+			opt += " %s"
 		}
 	case AppOptionChrome:
-		paths = chromePaths()
-		for i := range paths {
-			paths[i] += optionAppStyleChrome
+		cmds, opt = chromePaths()
+		if opt == "" {
+			opt = optionAppStyleChrome
+		} else {
+			opt += " " + optionAppStyleChrome
 		}
 	}
-	return paths
+	return cmds, opt
 }
 
 func tryBrowser(t int, p string) error {
-	cmds := browsers(t)
-	for _, v := range cmds {
-		v = fmt.Sprintf(v, p)
+	cmds, opt := browsers(t)
+	o := fmt.Sprintf(opt, p)
+	args := strings.Split(o, " ")
+	for _, c := range cmds {
 		// Separate command and arguments for exec.Command.
-		args := strings.Split(v, " ")
 		if len(args) == 0 {
 			continue
 		}
-		log.Println("executing", v)
-		viewer := exec.Command(args[0], args[1:]...)
+		log.Println("executing", c, o)
+		viewer := exec.Command(c, args...)
 		//viewer.Stderr = os.Stderr
 		if err := viewer.Start(); err != nil {
 			log.Println(err)

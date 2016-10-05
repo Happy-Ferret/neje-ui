@@ -66,7 +66,7 @@ func main() {
 			msg := "Now " + time.Now().String() + " at server!"
 			reply := ""
 			if err := ws.Call("GUI.Write", &msg, &reply); err != nil {
-				log.Fatal(err)
+				log.Println(err)
 			}
 		}
 	}

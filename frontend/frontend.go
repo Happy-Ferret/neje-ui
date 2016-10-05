@@ -29,6 +29,7 @@
 package frontend
 
 import (
+	"errors"
 	"log"
 	"net"
 	"net/rpc"
@@ -122,6 +123,9 @@ func New(strs ...interface{}) (*Frontend, error) {
 
 //Call Calls calls RPC.
 func (b *Frontend) Call(m string, args interface{}, reply interface{}) error {
+	if b.client == nil {
+		return errors.New("not connected to server yet")
+	}
 	return b.client.Call(m, args, reply)
 }
 

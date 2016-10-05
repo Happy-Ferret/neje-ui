@@ -30,28 +30,31 @@
 
 package backend
 
-import "log"
+import (
+	"log"
+
+	"golang.org/x/sys/windows/registry"
+)
 
 //defaultPath returns paths of default browsers.
-func defaultPaths() []string {
-	return []string{"cmd /c start /wait"}
+func defaultPaths() ([]string, string) {
+	return []string{"cmd"}, "/c start"
 }
 
 //chromePath returns paths of chrome.
-func chromePaths() []string {
-	k, err := registry.OpenKey(registry.LOCAL_MACHINE,
-		`SOFTWARE\Microsoft\Windows NT\CurrentVersion\App Paths`,
-		registry.QUERY_VALUE)
+func chromePaths() ([]string, string) {
+	regpath := `SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe`
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, regpath, registry.QUERY_VALUE)
 	if err != nil {
-		log.Printf(err)
-		return nil
+		log.Println(regpath, err)
+		return nil, ""
 	}
 	defer k.Close()
 
-	s, _, err := k.GetStringValue("chrome.exe")
+	s, _, err := k.GetStringValue("")
 	if err != nil {
-		log.Printf(err)
-		return nil
+		log.Println(err)
+		return nil, ""
 	}
-	return []string{s}
+	return []string{s}, ""
 }

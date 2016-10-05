@@ -20,7 +20,7 @@ I believe this works on Linux, Win and OS X, but I have only tested on Linux.
 ### Default browser mode (ex. firefox) 
 ![](http://i.imgur.com/CbDrwWr.gif)
 
-* You can install any browser.
+* You can install other browsers.
 * Its appearance is "browser" itself. 
 * You cannot control window size and window location by Javascript due to the  browser restrictions.
 
@@ -36,9 +36,9 @@ You can write the server-side *and* client side program in Go.
 This requires
 
 * git
-* go 1.7 (for gopherjs)
-* web browser (Chrome browser is recommended)
-* gopherjs
+* go 1.7 (for GopherJS)
+* web browser (Internet Explore 10 or newer, firefox, Chrome browser is recommended)
+* GopherJS
 
 ```
 go get -u github.com/gopherjs/gopherjs
@@ -164,9 +164,9 @@ display the demo.
 ## Why not embed Chrome lib?
 
 1. Chrome lib is too big (about 100MB?) for a single app. 
-Go is used to make a single app rather than used in framework like electron. 
+Go is used to make a single app, not used in framework like electron. 
 2. Chrome lib APIs are always changing.
-3. Noone wants to loose the eco system (easy to cross compile etc) of Go.
+3. Nobody wants to loose the eco system (easy to cross compile etc) of Go.
 4. Chrome lib is too difficult to understand :(
 5. Chrome browser has convenient options for an application (--app etc).
 

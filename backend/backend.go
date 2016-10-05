@@ -29,6 +29,7 @@
 package backend
 
 import (
+	"errors"
 	"log"
 	"net"
 	"net/http"
@@ -112,6 +113,9 @@ func (w *Backend) Close() {
 
 //Call calls calls RPC.
 func (w *Backend) Call(m string, args interface{}, reply interface{}) error {
+	if w.client == nil {
+		return errors.New("not connected to server yet")
+	}
 	return w.client.Call(m, args, reply)
 }
 
