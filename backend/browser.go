@@ -75,14 +75,18 @@ func tryBrowser(t int, p string) error {
 	cmds, opt := browsers(t)
 	o := fmt.Sprintf(opt, p)
 	args := strings.Split(o, " ")
+	filteredArgs := args[:0]
+	for _, arg := range args {
+		filteredArgs = append(filteredArgs, strings.Replace(arg, "^", " ", -1))
+	}
 	for _, c := range cmds {
 		// Separate command and arguments for exec.Command.
 		if len(args) == 0 {
 			continue
 		}
 		log.Println("executing", c, o)
-		viewer := exec.Command(c, args...)
-		//viewer.Stderr = os.Stderr
+		viewer := exec.Command(c, filteredArgs...)
+		viewer.Stderr = os.Stderr
 		if err := viewer.Start(); err != nil {
 			log.Println(err)
 			continue
