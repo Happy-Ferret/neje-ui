@@ -57,6 +57,7 @@ go get -u github.com/gopherjs/gopherjs
 ## Document
 
 [frontend](https://godoc.org/github.com/utamaro/neje-ui/frontend)
+
 [backend](https://godoc.org/github.com/utamaro/neje-ui/backend)
 
 
@@ -66,6 +67,7 @@ go get -u github.com/gopherjs/gopherjs
 ## browser side
 
 [ex.html](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.html)
+
 [ex.go](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.go)
 
 ```go
@@ -168,7 +170,7 @@ Then your default browser will open automatically and display the demo.
 ## Why not embed Chrome lib?
 
 1. Chrome lib is too big (about 100MB?) for a single app. 
-Go is used to make a single app, not used in framework like electron. 
+Go is for making single apps, not for framework like electron. 
 2. Chrome lib APIs are always changing.
 3. Nobody wants to loose the eco system (easy to cross compile etc) of Go.
 4. Chrome lib is too difficult to understand :(
@@ -180,11 +182,11 @@ Go is used to make a single app, not used in framework like electron.
 
 ### Cons
 
-* You can't control browser precisely--must control them via JavaScript, manually. (window size, menu etc.)
+* You must control everything via JavaScript manually (window size, menu etc.) under restrictions of the browser.
 * Behaviour may be different for each platforms when you use default browser.
-
 
 # Contribution
 Improvements to the codebase and pull requests are encouraged.
+
 Also any ideas including attractive demos are welcomed.
 
