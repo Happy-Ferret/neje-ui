@@ -47,7 +47,7 @@ func defaultPaths() ([]string, string) {
 func chromePaths() ([]string, string) {
 	switch runtime.GOOS {
 	case "darwin":
-		return []string{"/usr/bin/open"}, "-n -a Google\\ Chrome --args"
+		return []string{"/usr/bin/open"}, "-n -a Google^Chrome --args"
 
 	default:
 		return []string{
