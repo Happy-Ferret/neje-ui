@@ -1,13 +1,10 @@
 [![Build Status](https://travis-ci.org/utamaro/neje-ui.svg?branch=master)](https://travis-ci.org/utamaro/neje-ui)
-[![GoDoc](https://godoc.org/github.com/utamaro/neje-ui?status.svg)](https://godoc.org/github.com/utamaro/neje-ui)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/utamaro/neje-ui/master/LICENSE)
 
 
 # neje-ui
 
 Do **Not Embed, Just Execute** the browser for an UI in Go.
-
-For now it's just a PoC (proof of concept).  Don't believe me too much. :) 
 
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
@@ -56,6 +53,11 @@ go get -u github.com/gopherjs/gopherjs
 ## Installation
 
     $ go get -u github.com/utamaro/neje-ui
+
+## Document
+
+[frontend](https://godoc.org/github.com/utamaro/neje-ui/frontend)
+[backend](https://godoc.org/github.com/utamaro/neje-ui/backend)
 
 
 ## Example
@@ -147,8 +149,7 @@ Then copy ex.html and ex.js to the webserver directory,
 go run ex.go
 ```
 
-Then your Chrome browser (or something else if Chrome is not installed) will open automatically and
-display the demo.
+Then your default browser will open automatically and display the demo.
 
 ## What is It Doing?
 
