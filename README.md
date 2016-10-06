@@ -39,7 +39,8 @@ This requires
 * web browser
 	* Newest Chrome browser is recommended.
 	* firefox
-	* This doens't work on Internet Explorer and Microsoft Edge (because GopherJS uses ECMAScript6?) 
+	* Microsoft Edge
+	* This doens't work on Internet Explorer (because GopherJS uses ECMAScript6?) 
 * GopherJS
 
 ```
