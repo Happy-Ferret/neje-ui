@@ -6,6 +6,8 @@
 
 Do **Not Embed, Just Execute** the browser for an UI in Go.
 
+Any ideas including attractive demos are welcomed.
+
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
 
@@ -187,6 +189,4 @@ Go is for making single apps, not for framework like electron.
 
 # Contribution
 Improvements to the codebase and pull requests are encouraged.
-
-Also any ideas including attractive demos are welcomed.
 
