@@ -37,24 +37,24 @@ import (
 )
 
 //defaultPath returns paths of default browsers.
-func defaultPaths() ([]string, string) {
-	return []string{"cmd"}, "/c start"
+func defaultPaths() ([]string, []string) {
+	return []string{"cmd"}, []string{"/c", "start"}
 }
 
 //chromePath returns paths of chrome.
-func chromePaths() ([]string, string) {
+func chromePaths() ([]string, []string) {
 	regpath := `SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe`
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, regpath, registry.QUERY_VALUE)
 	if err != nil {
 		log.Println(regpath, err)
-		return nil, ""
+		return nil, nil
 	}
 	defer k.Close()
 
 	s, _, err := k.GetStringValue("")
 	if err != nil {
 		log.Println(err)
-		return nil, ""
+		return nil, nil
 	}
-	return []string{s}, ""
+	return []string{s}, nil
 }

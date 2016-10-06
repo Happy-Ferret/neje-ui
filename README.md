@@ -9,8 +9,6 @@ Do **Not Embed, Just Execute** the browser for an UI in Go.
 
 For now it's just a PoC (proof of concept).  Don't believe me too much. :) 
 
-I believe this works on Linux, Win and OS X, but I have not tested on OS X. 
-
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
 
@@ -42,7 +40,7 @@ This requires
 * web browser
 	* Newest Chrome browser is recommended.
 	* firefox
-	* It doens't work on Internet Explorer and Microsoft Edge (because GopherJS uses ECMAScript6?) 
+	* This doens't work on Internet Explorer and Microsoft Edge (because GopherJS uses ECMAScript6?) 
 * GopherJS
 
 ```
@@ -52,7 +50,7 @@ go get -u github.com/gopherjs/gopherjs
 ## Platforms
 
 * Linux
-* OSX (not tested yet)
+* OSX
 * Windows
 
 ## Installation
@@ -187,5 +185,5 @@ Go is used to make a single app, not used in framework like electron.
 
 # Contribution
 Improvements to the codebase and pull requests are encouraged.
-And any ideas are also welcomed.
+Also any ideas including attractive demos are welcomed.
 

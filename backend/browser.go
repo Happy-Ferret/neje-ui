@@ -44,54 +44,54 @@ const (
 	AppOptionChrome
 )
 
-var optionAppStyleChrome = "--disable-extension  --new-window --app=%s"
+var optionAppStyleChrome = []string{"--disable-extension", "--new-window", "--app=%s"}
 
-func browsers(t int) ([]string, string) {
-	var cmds []string
-	opt := ""
+//replaceURL replaces %s in orig to url.
+func replaceURL(orig []string, url string) {
+	for i, o := range orig {
+		if strings.Contains(o, "%s") {
+			orig[i] = fmt.Sprintf(o, url)
+		}
+	}
+}
+
+//browsers returns the browser paths.
+//if t==Default this returns one of default browser.
+//if t=AppOptionChrome this returns one of chrome browser
+func browsers(t int) ([]string, []string) {
+	var cmds, opt []string
 	switch t {
 	case Default:
 		cmds, opt = defaultPaths()
 		if exe := os.Getenv("BROWSER"); exe != "" {
 			cmds = append([]string{exe}, cmds...)
 		}
-		if opt == "" {
-			opt = "%s"
-		} else {
-			opt += " %s"
-		}
+		opt = append(opt, "%s")
 	case AppOptionChrome:
 		cmds, opt = chromePaths()
-		if opt == "" {
-			opt = optionAppStyleChrome
-		} else {
-			opt += " " + optionAppStyleChrome
-		}
+		opt = append(opt, optionAppStyleChrome...)
 	}
 	return cmds, opt
 }
 
+//ErrNoBrowser is an error that no browsers are found.
+var ErrNoBrowser = errors.New("no browsers are found")
+
+//tryBrowser tries to start browsers and opens URL p.
+//if t==Default this tries to start default browser.
+//if t=AppOptionChrome this tries to chrome browser
 func tryBrowser(t int, p string) error {
 	cmds, opt := browsers(t)
-	o := fmt.Sprintf(opt, p)
-	args := strings.Split(o, " ")
-	filteredArgs := args[:0]
-	for _, arg := range args {
-		filteredArgs = append(filteredArgs, strings.Replace(arg, "^", " ", -1))
-	}
+	replaceURL(opt, p)
 	for _, c := range cmds {
-		// Separate command and arguments for exec.Command.
-		if len(args) == 0 {
-			continue
-		}
-		log.Println("executing", c, o)
-		viewer := exec.Command(c, filteredArgs...)
-		viewer.Stderr = os.Stderr
+		log.Println("executing", c, opt)
+		viewer := exec.Command(c, opt...)
+		//viewer.Stderr = os.Stderr
 		if err := viewer.Start(); err != nil {
 			log.Println(err)
 			continue
 		}
 		return nil
 	}
-	return errors.New("no browsers are found")
+	return ErrNoBrowser
 }
