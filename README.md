@@ -8,6 +8,8 @@ Do **Not Embed, Just Execute** the browser for an UI in Go.
 
 Any ideas including attractive demos are welcomed.
 
+Feel free to [ussue](https://github.com/utamaro/neje-ui/issues) yor interesting ideas.
+
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
 
