@@ -8,7 +8,7 @@ Do **Not Embed, Just Execute** the browser for an UI in Go.
 
 Any ideas including attractive demos are welcomed.
 
-Feel free to [ussue](https://github.com/utamaro/neje-ui/issues) yor interesting ideas.
+Feel free to [issue](https://github.com/utamaro/neje-ui/issues) yor interesting ideas.
 
 ### App option of chrome mode 
 ![](http://imgur.com/2TSlOIp.gif)
@@ -71,9 +71,9 @@ go get -u github.com/gopherjs/gopherjs
 
 ## browser side
 
-[ex.html](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.html)
+[ex.html](https://github.com/utamaro/neje-ui/blob/master/example/frontend/ex.html)
 
-[ex.go](https://github.com/utamaro/neje-ui/blob/master/example/browser/ex.go)
+[ex.go](https://github.com/utamaro/neje-ui/blob/master/example/backend/ex.go)
 
 ```go
 
